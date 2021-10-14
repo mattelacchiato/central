@@ -20,14 +20,13 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 
+#//TODO (mb) 14.10.21: parallelize
 jobs:
   build:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
