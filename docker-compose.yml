@@ -59,11 +59,9 @@ services:
     image: 'ghcr.io/getodk/pyxform-http:v1.6.0'
     restart: always
   secrets:
+    image: ghcr.io/mattelacchiato/secrets:latest
     volumes:
       - ./volumes/secrets:/etc/secrets
-    build:
-      context: .
-      dockerfile: secrets.dockerfile
     command: './generate-secrets.sh'
   enketo:
     volumes:
