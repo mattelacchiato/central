@@ -81,12 +81,12 @@ jobs:
           #//TODO (mb) 13.10.21: grep tag from git tag/branch
           tags: ghcr.io/mattelacchiato/nginx:latest
           labels: ${{ steps.meta.outputs.labels }}
-#       - name: Build and push secrets Docker image
-#         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-#         with:
-#           file: secrets.dockerfile
-#           context: .
-#           push: ${{ github.event_name != 'pull_request' }}
-#           #//TODO (mb) 13.10.21: grep tag from git tag/branch
-#           tags: ghcr.io/mattelacchiato/secrets:latest
-#           labels: ${{ steps.meta.outputs.labels }}
+      - name: Build and push secrets Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          file: secrets.dockerfile
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          #//TODO (mb) 13.10.21: grep tag from git tag/branch
+          tags: ghcr.io/mattelacchiato/secrets:latest
+          labels: ${{ steps.meta.outputs.labels }}
