@@ -3,7 +3,7 @@ services:
   postgres:
     image: "postgres:9.6"
     volumes:
-      - ./postgres:/var/lib/postgresql/data
+      - ./volumes/postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: odk
       POSTGRES_PASSWORD: odk
@@ -26,7 +26,7 @@ services:
       - pyxform
       - enketo
     volumes:
-      - ./secrets:/etc/secrets
+      - ./volumes/secrets:/etc/secrets
       - /data/transfer:/data/transfer
     environment:
       - DOMAIN
@@ -60,14 +60,14 @@ services:
     restart: always
   secrets:
     volumes:
-      - ./secrets:/etc/secrets
+      - ./volumes/secrets:/etc/secrets
     build:
       context: .
       dockerfile: secrets.dockerfile
     command: './generate-secrets.sh'
   enketo:
     volumes:
-      - ./secrets:/etc/secrets
+      - ./volumes/secrets:/etc/secrets
     image: ghcr.io/mattelacchiato/enketo:latest
     restart: always
     depends_on:
@@ -81,7 +81,7 @@ services:
     image: redis:5
     volumes:
       - ./files/enketo/redis-enketo-main.conf:/usr/local/etc/redis/redis.conf:ro
-      - ./redis/main:/data
+      - ./volumes/redis/main:/data
     command:
       - redis-server
       - /usr/local/etc/redis/redis.conf
@@ -90,7 +90,7 @@ services:
     image: redis:5
     volumes:
       - ./files/enketo/redis-enketo-cache.conf:/usr/local/etc/redis/redis.conf:ro
-      - ./redis/cache:/data
+      - ./volumes/redis/cache:/data
     command:
       - redis-server
       - /usr/local/etc/redis/redis.conf
