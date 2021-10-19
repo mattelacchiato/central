@@ -1,11 +1,11 @@
 {
     "app name": "Enketo",
     "base path": "-",
-    "encryption key": "${ENKETO_SECRET}",
+    "encryption key": "${SECRET}",
     "id length": 31,
-    "less secure encryption key": "${ENKETO_LESS_SECRET}",
+    "less secure encryption key": "${LESS_SECRET}",
     "linked form and data server": {
-        "api key": "${ENKETO_API_KEY}",
+        "api key": "${API_KEY}",
         "authentication": {
             "type": "cookie",
             "url": "https://${DOMAIN}/#/login?next={RETURNURL}"

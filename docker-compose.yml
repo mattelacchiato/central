@@ -20,11 +20,13 @@ services:
   service:
     image: ghcr.io/mattelacchiato/service:latest
     depends_on:
+      - secrets
       - postgres
       - mail
       - pyxform
       - enketo
     volumes:
+      - ./secrets:/etc/secrets
       - /data/transfer:/data/transfer
     environment:
       - DOMAIN
@@ -56,18 +58,25 @@ services:
   pyxform:
     image: 'ghcr.io/getodk/pyxform-http:v1.6.0'
     restart: always
+  secrets:
+    volumes:
+      - ./secrets:/etc/secrets
+    build:
+      context: .
+      dockerfile: secrets.dockerfile
+    command: './generate-secrets.sh'
   enketo:
+    volumes:
+      - ./secrets:/etc/secrets
     image: ghcr.io/mattelacchiato/enketo:latest
     restart: always
     depends_on:
+      - secrets
       - enketo_redis_main
       - enketo_redis_cache
     environment:
       - DOMAIN
       - SUPPORT_EMAIL=${SYSADMIN_EMAIL}
-      - ENKETO_SECRET
-      - ENKETO_API_KEY
-      - ENKETO_LESS_SECRET
   enketo_redis_main:
     image: redis:5
     volumes:
