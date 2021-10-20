@@ -20,7 +20,6 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 
-#//TODO (mb) 14.10.21: parallelize
 jobs:
   checkout_meta:
     runs-on: ubuntu-latest
@@ -35,8 +34,12 @@ jobs:
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-            # generate Docker tags based on the following events/attributes
+          images: |
+            ${{ env.REGISTRY }}/service
+            ${{ env.REGISTRY }}/enketo
+            ${{ env.REGISTRY }}/nginx
+            ${{ env.REGISTRY }}/secrets
+          # generate Docker tags based on the following events/attributes
           tags: |
             type=ref,event=branch
             type=ref,event=pr
