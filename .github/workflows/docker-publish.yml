@@ -67,6 +67,26 @@ jobs:
           #//TODO (mb) 13.10.21: grep tag from git tag/branch
           tags: ghcr.io/mattelacchiato/service:latest
           labels: ${{ needs.checkout_meta.outputs.labels }}
+
+  build-enketo:
+    needs: checkout_meta
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Checkout submodules
+        run: git submodule update -i
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and push enketo Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
@@ -76,6 +96,26 @@ jobs:
           #//TODO (mb) 13.10.21: grep tag from git tag/branch
           tags: ghcr.io/mattelacchiato/enketo:latest
           labels: ${{ needs.checkout_meta.outputs.labels }}
+
+  build-nginx:
+    needs: checkout_meta
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Checkout submodules
+        run: git submodule update -i
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and push nginx Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
@@ -85,6 +125,26 @@ jobs:
           #//TODO (mb) 13.10.21: grep tag from git tag/branch
           tags: ghcr.io/mattelacchiato/nginx:latest
           labels: ${{ needs.checkout_meta.outputs.labels }}
+
+  build-secrets:
+    needs: checkout_meta
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Checkout submodules
+        run: git submodule update -i
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and push secrets Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
