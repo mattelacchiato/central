@@ -38,7 +38,6 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
             # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
             type=ref,event=branch
             type=ref,event=pr
             type=semver,pattern={{version}}
@@ -47,8 +46,8 @@ jobs:
             type=semver,pattern={{major}}
             type=sha
     outputs:
-      labels: steps.meta.outputs.labels
-      tags: steps.meta.outputs.tags
+      labels: ${{ steps.meta.outputs.labels }}
+      tags: ${{ steps.meta.outputs.tags }}
 
   build-service:
     needs: checkout_meta
