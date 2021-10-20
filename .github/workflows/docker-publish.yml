@@ -36,8 +36,19 @@ jobs:
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+            # generate Docker tags based on the following events/attributes
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}.{{hotfix}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
     outputs:
       labels: steps.meta.outputs.labels
+      tags: steps.meta.outputs.tags
 
   build-service:
     needs: checkout_meta
@@ -151,6 +162,5 @@ jobs:
           file: secrets.dockerfile
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          #//TODO (mb) 13.10.21: grep tag from git tag/branch
-          tags: ghcr.io/mattelacchiato/secrets:latest
+          tags: ${{ needs.checkout_meta.outputs.tags }}
           labels: ${{ needs.checkout_meta.outputs.labels }}
