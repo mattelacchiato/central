@@ -141,7 +141,7 @@ jobs:
 #          labels: ${{ needs.checkout_meta.outputs.labels }}
 
   build-secrets:
-    needs: checkout_meta
+    #needs: checkout_meta
     runs-on: ubuntu-latest
     permissions:
       contents: read
