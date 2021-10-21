@@ -17,18 +17,15 @@ env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
 
 
 
 jobs:
-  checkout_meta:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: env
-        run: env
+#  checkout_meta:
+#    runs-on: ubuntu-latest
+#    permissions:
+#      contents: read
+#    steps:
 #      - name: Checkout repository
 #        uses: actions/checkout@v2
 #      - name: Checkout submodules
@@ -39,10 +36,10 @@ jobs:
 #        with:
 #          #//TODO (mb) 20.10.21: use name from repo
 #          images: |
-#            ${{ env.REGISTRY }}/mattelacchiato/service
-#            ${{ env.REGISTRY }}/mattelacchiato/enketo
-#            ${{ env.REGISTRY }}/mattelacchiato/nginx
-#            ${{ env.REGISTRY }}/mattelacchiato/secrets
+#            ${{ github.repository }}/service
+#            ${{ github.repository }}/enketo
+#            ${{ github.repository }}/nginx
+#            ${{ github.repository }}/secrets
 #          # generate Docker tags based on the following events/attributes
 #          tags: |
 #            type=ref,event=branch
@@ -142,31 +139,45 @@ jobs:
 #          #//TODO (mb) 13.10.21: grep tag from git tag/branch
 #          tags: ghcr.io/mattelacchiato/nginx:latest
 #          labels: ${{ needs.checkout_meta.outputs.labels }}
-#
-#  build-secrets:
-#    needs: checkout_meta
-#    runs-on: ubuntu-latest
-#    permissions:
-#      contents: read
-#      packages: write
-#    steps:
-#      - name: Checkout repository
-#        uses: actions/checkout@v2
-#      - name: Checkout submodules
-#        run: git submodule update -i
-#      - name: Log into registry ${{ env.REGISTRY }}
-#        if: github.event_name != 'pull_request'
-#        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
-#        with:
-#          registry: ${{ env.REGISTRY }}
-#          username: ${{ github.actor }}
-#          password: ${{ secrets.GITHUB_TOKEN }}
-#
-#      - name: Build and push secrets Docker image
-#        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-#        with:
-#          file: secrets.dockerfile
-#          context: .
-#          push: ${{ github.event_name != 'pull_request' }}
-#          tags: ${{ needs.checkout_meta.outputs.tags }}
-#          labels: ${{ needs.checkout_meta.outputs.labels }}
+
+  build-secrets:
+    needs: checkout_meta
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Checkout submodules
+        run: git submodule update -i
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@28218f9b04b4f3f62068d7b6ce6ca5b26e35336c
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: |
+            ${{ github.repository }}/secrets
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}.{{hotfix}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
+      - name: Build and push secrets Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          file: secrets.dockerfile
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
