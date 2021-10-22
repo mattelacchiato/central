@@ -28,6 +28,7 @@ services:
     volumes:
       - ./volumes/secrets:/etc/secrets
       - /data/transfer:/data/transfer
+      - ./files/service/config.json.template:/usr/share/odk/config.json.template
     environment:
       - DOMAIN
       - SYSADMIN_EMAIL
@@ -45,8 +46,6 @@ services:
       - SSL_TYPE=${SSL_TYPE:-letsencrypt}
       - DOMAIN=${DOMAIN}
       - CERTBOT_EMAIL=${SYSADMIN_EMAIL}
-    volumes:
-      - ./files/service/config.json.template:/usr/share/odk/
     ports:
       - "${HTTP_PORT:-80}:80"
       - "${HTTPS_PORT:-443}:443"
