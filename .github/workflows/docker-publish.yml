@@ -16,7 +16,7 @@ on:
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
-  REGISTRY_WITH_PATH: ${{ env.REGISTRY }}/${{ github.repository_owner }}
+  REGISTRY_WITH_PATH: ${{ REGISTRY }}/${{ github.repository_owner }}
 
 
 
